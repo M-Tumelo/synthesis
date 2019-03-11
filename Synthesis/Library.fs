@@ -33,8 +33,13 @@ let toTime x =
     |false -> (x/3600,(x%3600/60),x%3600%60)
 
 let digits dig =
-     
-    failwith "Not implemented"
+    let rec sumTo digit value=
+        match digit=0 with
+       |true ->value
+       |_-> sumTo (digit/10) (value+1)
+    match dig <>0 with
+    |false->1
+    |true-> sumTo dig 0
 
 let minmax (a,b,c,d) =
 
@@ -44,10 +49,9 @@ let minmax (a,b,c,d) =
 let isLeap _ =
     failwith "Not implemented"
 
-let month a =
-     match a with
+let month = function
      |1 -> ("January",31)
-     |2 -> ("Feburary",28)
+     |2 -> ("February",28)
      |3 -> ("March",31)
      |4 -> ("April",30)
      |5 -> ("May",31)
@@ -63,7 +67,9 @@ let month a =
 let toBinary _ =
     failwith "Not implemented"
 
-let bizFuzz _ =
+let bizFuzz a =
+    // let rec fuzz c= 
+      // match 
     failwith "Not implemented"
 
 let monthDay _ _ =
