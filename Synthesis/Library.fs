@@ -1,5 +1,7 @@
 ﻿module Synthesis
 
+open System.Xml.Linq
+
 let abelar a =
     a>12 && a<3097 && a%12=0 
 
@@ -7,8 +9,6 @@ let area m n=
     match m<0.0 || n<0.0 with
     |true -> failwith "Not implemented"
     |false ->0.5*m*n
-    
-    
 
 let zollo t =
     match t>0 with
@@ -33,6 +33,7 @@ let toTime x =
     |false -> (x/3600,(x%3600/60),x%3600%60)
 
 let digits dig =
+
     let rec sumTo digit value=
         match digit=0 with
        |true ->value
@@ -42,14 +43,19 @@ let digits dig =
     |true-> sumTo dig 0
 
 let minmax (a,b,c,d) =
-
    (min a b|> min c |> min d,max a b|> max c |> max d)
 
+let isLeap k =
+       match k<=1581 with
+       |true-> failwith "Its not a leap year"
+       |_->
+        match (k%4=0) && (k%100 <>0) || (k%4=0) && (k%100=0) && (k%400=0) with 
+        |true-> true
+        |_ -> false
 
-let isLeap _ =
-    failwith "Not implemented"
 
 let month = function
+
      |1 -> ("January",31)
      |2 -> ("February",28)
      |3 -> ("March",31)
@@ -64,16 +70,42 @@ let month = function
      |12 -> ("December",31)
      |_ -> failwith "Um something is wrong!"
 
-let toBinary _ =
-    failwith "Not implemented"
+let toBinary p =
+     let rec bin s h =
+        match s<0 with 
+        |true ->failwith "Try again"
+        |_-> 
+            match s=0 && h<>"" with 
+            |true-> h
+            |false->
+              match s%2<>0 with
+              |true-> bin (s/2) ("1"+h)
+              |_ -> bin (s/2) ("0"+h)
+     bin p ""
 
-let bizFuzz a =
-    // let rec fuzz c= 
-      // match 
-    failwith "Not implemented"
+let bizFuzz n =
+    let rec fuzz i d x s =
+        match i > n with 
+        |true -> (d,x,s)
+        |_-> 
+            match (i%5=0) && (i%3=0) with 
+            |true -> fuzz (i+1) (d+1) (x+1) (s+1)
+            |_-> 
+                match (i%5=0) with 
+                 |true -> fuzz (i+1) d (x+1) s
+                 |_-> 
+                    match (i%3=0) with 
+                    |true -> fuzz (i+1) (d+1) x s
+                    |_-> fuzz (i+1) d x s
+    fuzz 1 0 0 0
 
-let monthDay _ _ =
-    failwith "Not implemented"
+let monthDay day year =
+     match day<=0 || day>366 || year <1582 with 
+     |true ->failwith "Not implemented"
+     |_-> 
+        match isLeap year with 
+        |true->true
+        |false->false
 
 let coord _ =
     failwith "Not implemented"
