@@ -34,13 +34,13 @@ let toTime x =
 
 let digits dig =
 
-    let rec sumTo digit value=
+    let rec count digit value=
         match digit=0 with
-       |true ->value
-       |_-> sumTo (digit/10) (value+1)
+        |true ->value
+        |_-> count (digit/10) (value+1)
     match dig <>0 with
     |false->1
-    |true-> sumTo dig 0
+    |true-> count dig 0
 
 let minmax (a,b,c,d) =
    (min a b|> min c |> min d,max a b|> max c |> max d)
@@ -100,12 +100,40 @@ let bizFuzz n =
     fuzz 1 0 0 0
 
 let monthDay day year =
-     match day<=0 || day>366 || year <1582 with 
-     |true ->failwith "Not implemented"
-     |_-> 
-        match isLeap year with 
-        |true->true
-        |false->false
+    let rec mon count t=
+     let (_,d) = month t
+     let intial=
+        match isLeap year && t=2 with
+        |true-> count+d+1
+        |false->count+d
+     match day<=0|| day> 366 ||year<1582 with
+     |true-> failwith "We know this is not right, right?"
+     |_->
+        match intial>=day with
+        |false-> mon intial (t+1)
+        |_-> let (nm,_) = month t
+             nm   
+    mon 0 1     
 
-let coord _ =
-    failwith "Not implemented"
+let coord (x1,y1) =
+    let sqrt n = 
+     let rec calculate guess i =
+        match i with
+         |10 -> guess
+         | _ ->
+              let g = (guess + n/guess) / 2.0
+              calculate g (i+1)
+
+     match n <= 0.0 with
+     | true -> failwith "Impossibru!"
+     | _ ->
+          calculate (n/2.0) 0
+
+    let dis (x,y)= sqrt ((x1-x)*(x1-x)+(y1-y)*(y1-y))
+
+    let recCoord (x2,y2) w h = 
+        match (x1<=(x2+h)&& x1>=x2 && y1<=y2&&y1>=(y2-w)) with
+        |true->true
+        |false-> false
+
+    (dis,recCoord)
